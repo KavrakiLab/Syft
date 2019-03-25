@@ -23,7 +23,6 @@ class syn
         int cur = 0;
         bool fixpoint();
         vector<BDD> W;
-        vector<BDD> Wprime;
         string state2bin(int n);
         void initializer();
         BDD state2bdd(int s);
@@ -36,6 +35,8 @@ class syn
         BDD univsyn_invariant(BDD univ);
         BDD existsyn_invariant(BDD exist, BDD& transducer);
         void strategy(vector<BDD>& S2O);
+ public:
+        vector<BDD> Wprime;
 };
 
 #endif // SYN_H

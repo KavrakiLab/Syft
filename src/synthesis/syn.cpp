@@ -93,14 +93,22 @@ void syn::printBDDSat(BDD b){
 
 bool syn::realizablity(unordered_map<unsigned int, BDD>& IFstrategy){
     while(true){
+
+      std::cout<<"computing fixpoint: "<<std::endl;
+
         //cout<<"interative"<<endl;
         //dumpdot(W[cur], "W"+to_string(cur));
         //dumpdot(Wprime[cur], "Wprme"+to_string(cur));
         BDD tmp = W[cur] + univsyn();
         W.push_back(tmp);
+
+        std::cout<<"W: "<<mgr->nodeCount(W)<<std::endl;
+
         cur++;
         //dumpdot(W[cur], "W"+to_string(cur));
-	Wprime.push_back(existsyn());
+        Wprime.push_back(existsyn());
+        std::cout<<"W': "<<mgr->nodeCount(Wprime)<<std::endl;
+
         if(fixpoint())
             break;
 	//        Wprime.push_back(existsyn());

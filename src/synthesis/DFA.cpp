@@ -193,8 +193,12 @@ void DFA::construct_from_comp_back(vbdd& S2S, vbdd& S2P, vbdd& Svars, vbdd& Ivar
   for (auto & v : Ovars){
     subnProj.push_back(v);
   }
+
+  std::cout<<"res.size(): "<<res.size()<<std::endl;
+
   for (int i=0; i<res.size(); i++){
     res[i] = res[i].VectorCompose(subnProj);
+    std::cout<<"i = "<<i<<"res[i]: "<<mgr->nodeCount(res)<<std::endl;
   }  
 
   // append the propositions to res
