@@ -92,6 +92,9 @@ void syn::printBDDSat(BDD b){
 }
 
 bool syn::realizablity(unordered_map<unsigned int, BDD>& IFstrategy){
+    size_t univ_time = 0;
+    size_t exist_time = 0;
+
     while(true){
 
       std::cout<<"computing fixpoint: "<<std::endl;
@@ -99,14 +102,18 @@ bool syn::realizablity(unordered_map<unsigned int, BDD>& IFstrategy){
         //cout<<"interative"<<endl;
         //dumpdot(W[cur], "W"+to_string(cur));
         //dumpdot(Wprime[cur], "Wprme"+to_string(cur));
+        auto start_t = std::clock();
         BDD tmp = W[cur] + univsyn();
         W.push_back(tmp);
+        univ_time += (std::clock() - start_t);
 
         std::cout<<"W: "<<mgr->nodeCount(W)<<std::endl;
 
         cur++;
         //dumpdot(W[cur], "W"+to_string(cur));
+        start_t = std::clock();
         Wprime.push_back(existsyn());
+        exist_time += (std::clock() - start_t);
         std::cout<<"W': "<<mgr->nodeCount(Wprime)<<std::endl;
 
         if(fixpoint())
@@ -114,6 +121,11 @@ bool syn::realizablity(unordered_map<unsigned int, BDD>& IFstrategy){
 	//        Wprime.push_back(existsyn());
         //assert(cur = (W.size() - 1));
     }
+
+    std::cout<<"univ_time: "<<univ_time<<std::endl;
+    std::cout<<"exist_time: "<<exist_time<<std::endl;
+
+
     if(Wprime[cur-1].Eval(bdd->initbv).IsOne()){
         BDD O = mgr->bddOne();
 	//        vector<BDD> S2O;
@@ -221,6 +233,8 @@ int* syn::state2bit(int n){
 
 
 BDD syn::univsyn(){
+  size_t total_compose_time = 0;
+  size_t total_not_time = 0;
     BDD I = mgr->bddOne();
     BDD tmp = Wprime[cur];
     int index;
@@ -233,16 +247,26 @@ BDD syn::univsyn(){
     tmp = prime(tmp);
     //dumpdot(tmp, "s-s'"+to_string(cur));
     for(int i = 0; i < bdd->nbits; i++){
+      auto start_t = std::clock();
         tmp = tmp.Compose(bdd->res[i], offset+i);
+        total_compose_time += (std::clock() - start_t);
+        //        std::cout<<"univsyn: tmp.compose: "<<mgr->nodeCount({tmp})<<std::endl;
+
         //dumpdot(tmp, "s.compose'"+to_string(i));
     }
     //dumpdot(tmp, "W00");
 
+    auto start_t = std::clock();
     tmp *= !Wprime[cur];
+    total_not_time += std::clock() - start_t;
+    // std::cout<<"univsyn: !Wprime: "<<mgr->nodeCount({tmp})<<std::endl;
 
     BDD eliminput = tmp.UnivAbstract(I);
     //dumpdot(eliminput, "W01");
     //dumpdot(eliminput, "EU"+to_string(cur));
+
+    std::cout<<"total compose time: "<<total_compose_time<<std::endl;
+    std::cout<<"total not time: "<<total_not_time<<std::endl;
     return eliminput;
 
 }
