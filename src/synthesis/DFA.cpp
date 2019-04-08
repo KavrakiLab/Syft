@@ -168,7 +168,7 @@ void DFA::construct_from_comp_back(vbdd& S2S, vbdd& S2P, vbdd& Svars, vbdd& Ivar
   // Back up information needed for playing the game later
   res_orig = res;
   S2P_orig = S2P;
-  
+
   // substitute P from res, first create a substitution/projection vector, then use the batch substitution function
   vbdd subnProj;
   // task dfa states
@@ -199,13 +199,13 @@ void DFA::construct_from_comp_back(vbdd& S2S, vbdd& S2P, vbdd& Svars, vbdd& Ivar
   for (int i=0; i<res.size(); i++){
     res[i] = res[i].VectorCompose(subnProj);
     std::cout<<"i = "<<i<<"res[i]: "<<mgr->nodeCount(res)<<std::endl;
-  }  
+  }
 
   // append the propositions to res
   res.insert(res.end(), S2P.begin(), S2P.end());
   // append S2S to res
   res.insert(res.end(), S2S.begin(), S2S.end());
-  
+
   // fix the other variables (nvars, nbits, init, etc)
   std::cout<<"constructing bdd with "<<bddvars.size()<<"variables"<<std::endl;
   bddvars.insert(bddvars.end(), Svars.begin(), Svars.end());
@@ -247,6 +247,8 @@ void DFA::construct_from_comp_back(vbdd& S2S, vbdd& S2P, vbdd& Svars, vbdd& Ivar
   for (int i=0; i<Ovars.size(); i++){
     variables.push_back("OUT"+std::to_string(i));
   }
+
+  std::cout<<"res size after construct from back: "<<mgr->nodeCount(res)<<std::endl;
 
 }
 

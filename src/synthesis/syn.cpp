@@ -245,13 +245,17 @@ BDD syn::univsyn(){
     }
     //dumpdot(I, "W00");
     tmp = prime(tmp);
-    //dumpdot(tmp, "s-s'"+to_string(cur));
+    dumpdot(tmp, "s-s'"+to_string(cur));
     for(int i = 0; i < bdd->nbits; i++){
       auto start_t = std::clock();
         tmp = tmp.Compose(bdd->res[i], offset+i);
+        std::cout<<"tmp size at compose step "<< i << " : "<<mgr->nodeCount({tmp})<<std::endl;
         total_compose_time += (std::clock() - start_t);
         //        std::cout<<"univsyn: tmp.compose: "<<mgr->nodeCount({tmp})<<std::endl;
 
+        if(mgr->nodeCount({tmp}) < 1000) {
+          dumpdot(tmp, "s.compose'"+to_string(i));
+        }
         //dumpdot(tmp, "s.compose'"+to_string(i));
     }
     //dumpdot(tmp, "W00");
@@ -259,7 +263,7 @@ BDD syn::univsyn(){
     auto start_t = std::clock();
     tmp *= !Wprime[cur];
     total_not_time += std::clock() - start_t;
-    // std::cout<<"univsyn: !Wprime: "<<mgr->nodeCount({tmp})<<std::endl;
+    std::cout<<"univsyn: !Wprime: "<<mgr->nodeCount({tmp})<<std::endl;
 
     BDD eliminput = tmp.UnivAbstract(I);
     //dumpdot(eliminput, "W01");
