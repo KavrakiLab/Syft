@@ -250,6 +250,9 @@ void DFA::construct_from_comp_back(vbdd& S2S, vbdd& S2P, vbdd& Svars, vbdd& Ivar
 
   std::cout<<"res size after construct from back: "<<mgr->nodeCount(res)<<std::endl;
 
+  for(size_t i = 0; i < res.size(); i++) {
+    dumpdot(res[i],std::string("res_19_bdd")+std::to_string(i));
+  }
 }
 
 void DFA::recur(int index, item tmp){
