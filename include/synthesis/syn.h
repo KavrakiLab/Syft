@@ -16,6 +16,7 @@ class syn
 	void printBDDSat(BDD b);
 
 	DFA* bdd;
+        vector<BDD> Wprime;
 
  protected:
     private:
@@ -23,7 +24,6 @@ class syn
         int cur = 0;
         bool fixpoint();
         vector<BDD> W;
-        vector<BDD> Wprime;
         string state2bin(int n);
         void initializer();
         BDD state2bdd(int s);
